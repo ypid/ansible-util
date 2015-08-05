@@ -51,7 +51,7 @@
 - name: Install Python SELinux bindings
   tags: util
   become: yes
-  when: util_registered_selinux_state.rc == 0
+  when: (util_registered_selinux_state.rc is defined and util_registered_selinux_state.rc == 0)
   with_items: util_package_list_selinux
   action: "{{ ansible_pkg_mgr }} state={{ util_package_state }} name={{ item }}"
 
@@ -102,6 +102,7 @@
     mode={{ util_persistent_data_path_local_mode|default(omit) }}
     owner={{ util_persistent_data_path_local_owner|default(omit) }}
     group={{ util_persistent_data_path_local_group|default(omit) }}
+  when: util_persistent_data_path_local is string
 
 # TODO [kraM] Make become configurable when v2 has arrived - Thu 21 May 2015 10:23:35 AM CEST
 - name: Install remote persistent data path
@@ -113,6 +114,7 @@
     mode={{ util_persistent_data_path_remote_mode|default(2777) }}
     owner={{ util_persistent_data_path_remote_owner|default(0) }}
     group={{ util_persistent_data_path_remote_group|default(0) }}
+  when: util_persistent_data_path_remote is string
 
 
 # Add some facts for other roles to use
